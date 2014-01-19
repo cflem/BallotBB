@@ -420,5 +420,30 @@ else if ($action == 'unsubscribe')
 }
 
 
+else if ($action == 'vote')
+{
+	if ((strtolower($_GET["vote"]) != "up" && strtolower($_GET["vote"]) != "down") || intval($_GET["pid"]) <= 0)
+		message($lang_common['Bad request'], false, '404 Not Found');
+
+	$pid = intval($_GET["pid"]);
+	$vote = intval(strtolower($_GET["vote"]) == "up");
+
+	$result = $db->query('SELECT poster_id FROM '.$db->prefix.'posts WHERE id='.$pid) or error('Unable to fetch post info', __FILE__, __LINE__, $db->error());
+	if (!$db->num_rows($result))
+		message($lang_common['Bad request'], false, '404 Not Found');
+	$poster = intval($db->result($result));
+
+	$result = $db->query('SELECT positive FROM '.$db->prefix.'votes WHERE uid='.$pun_user['id'].' AND pid='.$pid) or error('Unable to fetch vote info', __FILE__, __LINE__, $db->error());
+	$oldvote = intval($db->result($result));
+
+	if (!$db->num_rows($result))
+		$db->query('INSERT INTO '.$db->prefix.'votes (uid, pid, poster_id, positive) VALUES ('.$pun_user['id'].', '.$pid.', '.$poster.', '.$vote.')') or error('Unable to insert vote data', __FILE__, __LINE__, $db->error());
+	else if ($vote != $oldvote)
+		$db->query('UPDATE '.$db->prefix.'votes SET positive='.$vote.' WHERE uid='.$pun_user['id'].' AND pid='.$pid) or error('Unable to update vote data', __FILE__, __LINE__, $db->error());
+
+	redirect('viewtopic.php?pid='.$pid.'#p'.$pid, $lang_misc['Vote redirect']);
+}
+
+
 else
 	message($lang_common['Bad request'], false, '404 Not Found');

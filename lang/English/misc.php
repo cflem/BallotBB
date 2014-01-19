@@ -36,6 +36,9 @@ $lang_misc = array(
 'Not subscribed forum'			=>	'You are not subscribed to this forum.',
 'Unsubscribe redirect'			=>	'Your subscription has been removed. Redirecting …',
 
+// Voting
+'Vote redirect'				=>	'Your vote has been cast. Redirecting …',
+
 // General forum and topic moderation
 'Moderate'						=>	'Moderate',
 'Select'						=>	'Select', // the header of a column of checkboxes
