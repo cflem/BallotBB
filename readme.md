@@ -1,11 +1,15 @@
-# FluxBB 1.5 Readme
+# BallotBB 1.0 Readme
 
 ## About
 
-FluxBB is an open source forum application released under the GNU General Public
-Licence. It is free to download and use and will remain so. FluxBB was conceived and
-designed to be fast and light with less of the "not so essential" features that some
-of the other forums have whilst not sacrificing essential functionality or usability.
+BallotBB is the result of a set of conflicts on forum sites which resulted
+in either anarchies or overstrict administration and abuse of power, often
+alternating between both. BallotBB is a completely democratic forum software
+based on a user's reputation rather than their assigned rank. Users gain
+reputation for making constructive comments and lose it for making offensive
+or nonconstructive ones. A certain amount of reputation is required in order
+to make important decisions such as reporting posts for removal and requesting
+patches.
 
 ## Requirements
 
@@ -16,13 +20,8 @@ of the other forums have whilst not sacrificing essential functionality or usabi
 ## Recommendations
 
 * Make use of a PHP accelerator such as APC or XCache
-* Make sure PHP has the zlib module installed to allow FluxBB to gzip output
+* Make sure PHP has the zlib module installed to allow BallotBB to gzip output
 
 ## Links
 
-* Homepage: http://fluxbb.org
-* Documentation: http://fluxbb.org/docs/v1.5
-* Community: http://fluxbb.org/forums/
-* Resources: http://fluxbb.org/resources/
-* IRC: irc://irc.freenode.net/fluxbb
-* Development: http://github.com/fluxbb/fluxbb
+* Development: http://github.com/GeonoTRON2000/BallotBB
