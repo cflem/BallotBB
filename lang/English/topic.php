@@ -5,6 +5,7 @@ $lang_topic = array(
 
 'Post reply'		=>	'Post reply',
 'Topic closed'		=>	'Topic closed',
+'Reputation'			=>	'Reputation',
 'From'				=>	'From:', // User location
 'IP address logged'	=>	'IP address logged',
 'Note'				=>	'Note:', // Admin note
@@ -17,6 +18,8 @@ $lang_topic = array(
 'Offline'			=>	'Offline',
 'Last edit'			=>	'Last edited by',
 'Report'			=>	'Report',
+'UpVote'			=>	'Constructive',
+'DownVote'			=>	'Destructive',
 'Delete'			=>	'Delete',
 'Edit'				=>	'Edit',
 'Quote'				=>	'Quote',

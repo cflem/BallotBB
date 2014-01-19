@@ -57,6 +57,7 @@ $lang_common = array(
 'Topic'								=>	'Topic',
 'Forum'								=>	'Forum',
 'Posts'								=>	'Posts',
+'Reputation'							=>	'Reputation',
 'Replies'							=>	'Replies',
 'Pages'								=>	'Pages:',
 'Page'								=>	'Page %s',
