@@ -4,19 +4,19 @@
 
 * constructive posts
 * measured by votes, up and down
-..+ votes on constructive/offensive
-..+ weighted as needed
+..* votes on constructive/offensive
+..* weighted as needed
 * aggregation of posts
-..+ possibly adding votes
+..* possibly adding votes
 
 ## Offensive Content Removal (based on reputation)
 
 * report button
 * required field for reason:
-..+ spam
-..+ language
-..+ insulting
-..+ graphic
+  * spam
+  * language
+  * insulting
+  * graphic
 * both manual and automatic
 * reputation threshold
 * lose more reputation if removed
@@ -28,10 +28,10 @@
 
 ## Poll-based administrative decisions
 * mini script language
-..+ take admin actions
-..+ run db queries
-..+ patch codebase
-..+ etc.
+  * take admin actions
+  * run db queries
+  * patch codebase
+  * etc.
 
 ## Close derelict threads
 
