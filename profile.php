@@ -1004,7 +1004,7 @@ else if (isset($_POST['form_sent']))
 }
 
 
-$result = $db->query('SELECT u.username, u.email, u.title, u.realname, u.url, u.jabber, u.icq, u.msn, u.aim, u.yahoo, u.location, u.signature, u.disp_topics, u.disp_posts, u.email_setting, u.notify_with_post, u.auto_notify, u.show_smilies, u.show_img, u.show_img_sig, u.show_avatars, u.show_sig, u.timezone, u.dst, u.language, u.style, u.num_posts, u.last_post, u.registered, u.registration_ip, u.admin_note, u.date_format, u.time_format, u.last_visit, g.g_id, g.g_user_title, g.g_moderator, count(v.id) AS votes FROM '.$db->prefix.'users AS u LEFT JOIN '.$db->prefix.'groups AS g ON g.g_id=u.group_id LEFT JOIN '.$db->prefix.'votes AS v ON v.poster_id = u.id WHERE u.id='.$id) or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
+$result = $db->query('SELECT u.username, u.email, u.title, u.realname, u.url, u.jabber, u.icq, u.msn, u.aim, u.yahoo, u.location, u.signature, u.disp_topics, u.disp_posts, u.email_setting, u.notify_with_post, u.auto_notify, u.show_smilies, u.show_img, u.show_img_sig, u.show_avatars, u.show_sig, u.timezone, u.dst, u.language, u.style, u.num_posts, u.last_post, u.registered, u.registration_ip, u.admin_note, u.date_format, u.time_format, u.last_visit, g.g_id, g.g_user_title, g.g_moderator, count(uv.positive) AS upvotes, count(dv.positive) AS downvotes FROM '.$db->prefix.'users AS u LEFT JOIN '.$db->prefix.'groups AS g ON g.g_id=u.group_id LEFT JOIN '.$db->prefix.'votes AS uv ON uv.uid = u.id AND uv.positive = 1 LEFT JOIN '.$db->prefix.'votes AS dv ON dv.uid = u.id AND dv.positive = 0 WHERE u.id='.$id) or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
 if (!$db->num_rows($result))
 	message($lang_common['Bad request'], false, '404 Not Found');
 
@@ -1123,7 +1123,7 @@ if ($pun_user['id'] != $id &&																	// If we aren't the user (i.e. edi
 	$user_activity = array();
 
 	$user_activity[] = '<dt>'.$lang_common['Reputation'].'</dt>';
-	$user_activity[] = '<dd>'.forum_number_format($user['votes']).'</dd>';
+	$user_activity[] = '<dd>'.forum_number_format($user['upvotes']-$user['downvotes']).'</dd>';
 
 	$posts_field = '';
 	if ($pun_config['o_show_post_count'] == '1' || $pun_user['is_admmod'])

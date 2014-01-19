@@ -210,7 +210,7 @@ if (empty($post_ids))
 	error('The post table and topic table seem to be out of sync!', __FILE__, __LINE__);
 
 // Retrieve the posts (and their respective poster/online status)
-$result = $db->query('SELECT u.email, u.title, u.url, u.location, u.signature, u.email_setting, u.num_posts, u.registered, u.admin_note, p.id, p.poster AS username, p.poster_id, p.poster_ip, p.poster_email, p.message, p.hide_smilies, p.posted, p.edited, p.edited_by, g.g_id, g.g_user_title, o.user_id AS is_online FROM '.$db->prefix.'posts AS p INNER JOIN '.$db->prefix.'users AS u, count(v.id) AS votes ON u.id=p.poster_id INNER JOIN '.$db->prefix.'groups AS g ON g.g_id=u.group_id LEFT JOIN '.$db->prefix.'online AS o ON (o.user_id=u.id AND o.user_id!=1 AND o.idle=0) LEFT JOIN '.$db->prefix.'votes AS v ON v.poster_id = u.id WHERE p.id IN ('.implode(',', $post_ids).') ORDER BY p.id', true) or error('Unable to fetch post info', __FILE__, __LINE__, $db->error());
+$result = $db->query('SELECT u.email, u.title, u.url, u.location, u.signature, u.email_setting, u.num_posts, u.registered, u.admin_note, p.id, p.poster AS username, p.poster_id, p.poster_ip, p.poster_email, p.message, p.hide_smilies, p.posted, p.edited, p.edited_by, g.g_id, g.g_user_title, o.user_id AS is_online, count(uv.positive) AS upvotes, count(dv.positive) AS downvotes FROM '.$db->prefix.'posts AS p INNER JOIN '.$db->prefix.'users AS u ON u.id=p.poster_id INNER JOIN '.$db->prefix.'groups AS g ON g.g_id=u.group_id LEFT JOIN '.$db->prefix.'online AS o ON (o.user_id=u.id AND o.user_id!=1 AND o.idle=0) LEFT JOIN '.$db->prefix.'votes AS uv ON uv.poster_id = u.id AND uv.positive = 1 LEFT JOIN '.$db->prefix.'votes AS dv ON dv.poster_id = u.id AND dv.positive = 0 WHERE p.id IN ('.implode(',', $post_ids).') ORDER BY p.id', true) or error('Unable to fetch post info', __FILE__, __LINE__, $db->error());
 while ($cur_post = $db->fetch_assoc($result))
 {
 	$post_count++;
@@ -248,7 +248,7 @@ while ($cur_post = $db->fetch_assoc($result))
 		// We only show location, register date, post count and the contact links if "Show user info" is enabled
 		if ($pun_config['o_show_user_info'] == '1')
 		{
-			$user_info[] = '<dd><span>'.$lang_topic['Reputation'].' '.forum_number_format($cur_post['votes']).'</span></dd>';
+			$user_info[] = '<dd><span>'.$lang_topic['Reputation'].' '.forum_number_format($cur_post['upvotes']-$cur_post['downvotes']).'</span></dd>';
 			if ($cur_post['location'] != '')
 			{
 				if ($pun_config['o_censoring'] == '1')
@@ -302,10 +302,11 @@ while ($cur_post = $db->fetch_assoc($result))
 	if (!$is_admmod)
 	{
 		if (!$pun_user['is_guest'])
+		{
 			$post_actions[] = '<li class="postupvote"><span><a href="misc.php?action=vote&vote=up&pid='.$cur_post['id'].'">'.$lang_topic['UpVote'].'</a></span></li>';
-			$post_actions[] = '<li class-"postdownvote"><span><a href="misc.php?action=vote&vote=down&pid='.$cur_post['id'].'">'.$lang_topic['DownVote'].'</a></span></li>';
-
+			$post_actions[] = '<li class"postdownvote"><span><a href="misc.php?action=vote&vote=down&pid='.$cur_post['id'].'">'.$lang_topic['DownVote'].'</a></span></li>';
 			$post_actions[] = '<li class="postreport"><span><a href="misc.php?report='.$cur_post['id'].'">'.$lang_topic['Report'].'</a></span></li>';
+		}
 
 		if ($cur_topic['closed'] == '0')
 		{
@@ -323,6 +324,8 @@ while ($cur_post = $db->fetch_assoc($result))
 	}
 	else
 	{
+		$post_actions[] = '<li class="postupvote"><span><a href="misc.php?action=vote&vote=up&pid='.$cur_post['id'].'">'.$lang_topic['UpVote'].'</a></span></li>';
+		$post_actions[] = '<li class"postdownvote"><span><a href="misc.php?action=vote&vote=down&pid='.$cur_post['id'].'">'.$lang_topic['DownVote'].'</a></span></li>';
 		$post_actions[] = '<li class="postreport"><span><a href="misc.php?report='.$cur_post['id'].'">'.$lang_topic['Report'].'</a></span></li>';
 		if ($pun_user['g_id'] == PUN_ADMIN || !in_array($cur_post['poster_id'], $admin_ids))
 		{
