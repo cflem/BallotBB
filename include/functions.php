@@ -51,7 +51,7 @@ function check_cookie(&$pun_user)
 		}
 
 		// Check if there's a user with the user ID and password hash from the cookie
-		$result = $db->query('SELECT u.*, g.*, count(uv.positive) AS upvotes, count(dv.positive) AS downvotes, o.logged, o.idle FROM '.$db->prefix.'users AS u INNER JOIN '.$db->prefix.'groups AS g ON u.group_id=g.g_id LEFT JOIN '.$db->prefix.'votes AS uv ON uv.uid=u.id AND uv.positive=1 LEFT JOIN '.$db->prefix.'votes AS dv ON dv.uid=u.id AND dv.positive=0 LEFT JOIN '.$db->prefix.'online AS o ON o.user_id=u.id WHERE u.id='.intval($cookie['user_id'])) or error('Unable to fetch user information', __FILE__, __LINE__, $db->error());
+		$result = $db->query('SELECT u.*, g.*, count(uv.positive) AS upvotes, count(dv.positive) AS downvotes, o.logged, o.idle FROM '.$db->prefix.'users AS u INNER JOIN '.$db->prefix.'groups AS g ON u.group_id=g.g_id LEFT JOIN '.$db->prefix.'votes AS uv ON uv.poster_id = u.id AND uv.positive = 1 LEFT JOIN '.$db->prefix.'votes AS dv ON dv.poster_id = u.id AND dv.positive = 0 LEFT JOIN '.$db->prefix.'online AS o ON o.user_id=u.id WHERE u.id='.intval($cookie['user_id'])) or error('Unable to fetch user information', __FILE__, __LINE__, $db->error());
 		$pun_user = $db->fetch_assoc($result);
 
 		// If user authorisation failed
