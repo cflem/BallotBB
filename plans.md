@@ -4,10 +4,10 @@
 
 * constructive posts
 * measured by votes, up and down
-..* votes on constructive/offensive
-..* weighted as needed
+  * votes on constructive/offensive
+  * weighted as needed
 * aggregation of posts
-..* possibly adding votes
+  * possibly adding votes
 
 ## Offensive Content Removal (based on reputation)
 
