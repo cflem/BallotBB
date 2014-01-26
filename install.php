@@ -1538,6 +1538,8 @@ else
 
 	$db->create_table('votes', $schema) or error('Unable to create votes table', __FILE__, __LINE__, $db->error());
 
+	$db->query('CREATE VIEW reputation AS SELECT p.poster_id AS uid, SUM(2*v.positive-1) AS reputation FROM '.$db->prefix.'posts AS p LEFT JOIN '.$db->prefix.'votes AS v ON (v.uid = p.poster_id AND p.id = v.pid)') or error('Could not create reputation view', __FILE__, __LINE__, $db->error());
+
 	$now = time();
 
 	// Insert the four preset groups
