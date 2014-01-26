@@ -73,6 +73,7 @@ $lang_profile = array(
 'Email info'					=>	'Email: %s',
 'Posts info'					=>	'Posts: %s',
 'Registered info'				=>	'Registered: %s',
+'Reputation info'				=>	'Reputation: %s',
 'Last post info'				=>	'Last post: %s',
 'Last visit info'				=>	'Last visit: %s',
 'Show posts'					=>	'Show all posts',
