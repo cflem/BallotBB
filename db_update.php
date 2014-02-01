@@ -27,6 +27,24 @@ function install()
 				'allow_null'	=> false,
 				'default'		=> '0',
 			),
+			'uid'			=> array(
+				'datatype'		=> 'INT(10)',
+				'allow_null'	=> false,
+				'default'		=> '0'
+			)
+		),
+		'PRIMARY KEY'	=> array('pid')
+	);
+
+	$db->create_table('removals', $schema) or error('Unable to create removals table', __FILE__, __LINE__, $db->error());
+
+	$schema = array(
+		'FIELDS'		=> array(
+			'pid'			=> array(
+				'datatype'		=> 'INT(10)',
+				'allow_null'	=> false,
+				'default'		=> '0',
+			),
 			'poster_id'	=> array(
 				'datatype'		=> 'INT(10)',
 				'allow_null'	=> false,
@@ -48,7 +66,7 @@ function install()
 
 	$db->create_table('votes', $schema) or error('Unable to create votes table', __FILE__, __LINE__, $db->error());
 
-	$db->query('CREATE VIEW '.$db->prefix.'reputation AS SELECT p.poster_id AS uid, SUM(2*v.positive-1) AS reputation FROM '.$db->prefix.'posts AS p LEFT JOIN '.$db->prefix.'votes AS v ON (v.uid = p.poster_id AND p.id = v.pid)') or error('Could not create reputation view', __FILE__, __LINE__, $db->error());
+	$db->query('CREATE VIEW '.$db->prefix.'reputation AS SELECT p.poster_id AS uid, (SUM(2*v.positive-1)-(5*count(r.pid))) AS reputation FROM '.$db->prefix.'posts AS p LEFT JOIN '.$db->prefix.'removals AS r ON (r.uid = p.poster_id AND r.pid = p.id) LEFT JOIN '.$db->prefix.'votes AS v ON (v.uid = p.poster_id AND v.pid = p.id)') or error('Could not create reputation view', __FILE__, __LINE__, $db->error());
 }
 
 // This following function will be called when the user presses the "Restore" button (only if $mod_restore is true (see above))

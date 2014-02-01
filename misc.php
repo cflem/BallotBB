@@ -207,7 +207,7 @@ else if (isset($_GET['email']))
 
 else if (isset($_GET['report']))
 {
-	if ($pun_user['is_guest'])
+	if ($pun_user['is_guest'] || intval($pun_user['reputation']) < 0)
 		message($lang_common['No permission'], false, '403 Forbidden');
 
 	$post_id = intval($_GET['report']);
@@ -230,11 +230,12 @@ else if (isset($_GET['report']))
 			message(sprintf($lang_misc['Report flood'], $pun_user['g_report_flood'], $pun_user['g_report_flood'] - (time() - $pun_user['last_report_sent'])));
 
 		// Get the topic ID
-		$result = $db->query('SELECT topic_id FROM '.$db->prefix.'posts WHERE id='.$post_id) or error('Unable to fetch post info', __FILE__, __LINE__, $db->error());
+		$result = $db->query('SELECT topic_id, poster_id FROM '.$db->prefix.'posts WHERE id='.$post_id) or error('Unable to fetch post info', __FILE__, __LINE__, $db->error());
 		if (!$db->num_rows($result))
 			message($lang_common['Bad request'], false, '404 Not Found');
 
-		$topic_id = $db->result($result);
+		$topic_id = $db->result($result, 0, 0);
+		$poster_id = $db->result($result, 0, 1);
 
 		// Get the subject and forum ID
 		$result = $db->query('SELECT subject, forum_id FROM '.$db->prefix.'topics WHERE id='.$topic_id) or error('Unable to fetch topic info', __FILE__, __LINE__, $db->error());
@@ -275,6 +276,29 @@ else if (isset($_GET['report']))
 		}
 
 		$db->query('UPDATE '.$db->prefix.'users SET last_report_sent='.time().' WHERE id='.$pun_user['id']) or error('Unable to update user', __FILE__, __LINE__, $db->error());
+
+		// Delete the post if it has accumulated 20 reputation worth of reports over at least 5 users
+		$result = $db->query('SELECT SUM(rep.reputation) AS reputation, COUNT(rep.reputation) AS reporters FROM '.$db->prefix.'reports AS r LEFT JOIN '.$db->prefix.'reputation AS rep ON rep.uid = r.reported_by WHERE r.post_id = '.$post_id) or error('Unable to fetch reports info', __FILE__, __LINE__, $db->error());
+
+		if ($db->num_rows($result) > 0)
+		{
+			$reports = $db->fetch_assoc($result);
+			if (intval($reports['reputation']) >= 20 && intval($reports['reporters']) >= 5)
+			{
+				$result = $db->query('SELECT t.first_post_id FROM '.$db->prefix.'topics WHERE t.id = '.$topic_id) or error('Unable to fetch first post info', __FILE__, __LINE__, $db->error());
+
+				if ($db->result($result) == $post_id)
+				{
+					delete_topic($topic_id);
+					update_forum($forum_id);
+				}
+				else {
+					delete_post($post_id, $topic_id);
+					update_forum($forum_id);
+				}
+				$db->query('INSERT INTO '.$db->prefix.'removals (pid, uid) VALUES ('.$post_id.', '.$poster_id.')') or error('Unable to log the removal', __FILE__, __LINE__, $db->error());
+			}
+		}
 
 		redirect('viewforum.php?id='.$forum_id, $lang_misc['Report redirect']);
 	}
