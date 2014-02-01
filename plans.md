@@ -20,6 +20,9 @@
 * both manual and automatic
 * reputation threshold
 * lose more reputation if removed
+* semi-AI makes easier or harder to get removed
+  * based on previous experience
+  * looks at words
 
 ## Discipline Users
 * warning and ban
@@ -34,6 +37,9 @@
   * etc.
 
 ## Close derelict threads
+* Time-based closing
+* Requested by topic owner
+* Voted on by users
 
 ## Spambot detection
 * Honeypot?
