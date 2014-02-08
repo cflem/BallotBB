@@ -74,7 +74,7 @@ if (isset($_POST['form_sent']))
 	if (!isset($_COOKIE['regid']))
 		message($lang_common['Bad request'], false, '404 Not Found');
 
-	$result = $db->query('SELECT field, expiration FROM '.$db->prefix.'registration_fields WHERE id = \''.$db->escape($_COOKIE['regid']).'\'') or error('Unable to fetch registration ID', __FILE__, __LINE__, $db->error());
+	$result = $db->query('SELECT field, expires FROM '.$db->prefix.'registration_fields WHERE id = \''.$db->escape($_COOKIE['regid']).'\'') or error('Unable to fetch registration ID', __FILE__, __LINE__, $db->error());
 	if (!$db->num_rows($result))
 		message($lang_common['Bad request'], false, '404 Not Found');
 
