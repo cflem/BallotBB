@@ -80,7 +80,7 @@ if (isset($_POST['form_sent']))
 
 	$regid = $db->fetch_assoc($result);
 
-	if ($regid['expires'] <= time())
+	if ($regid['expires'] < time())
 		mesage($lang_common['Bad request'], false, '404 Not Found');
 
 	$userfield = $regid['field'];
@@ -287,7 +287,7 @@ else
 
 	$regid = $db->fetch_assoc($result);
 
-	if ($regid['expires'] <= time())
+	if ($regid['expires'] < time())
 		message($lang_common['Bad request'], false, '404 Not Found');
 
 	$regfield = $regid['field'];
