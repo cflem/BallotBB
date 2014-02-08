@@ -22,6 +22,27 @@ function install()
 
 	$schema = array(
 		'FIELDS'		=> array(
+			'id'			=> array(
+				'datatype'		=> 'VARCHAR(13)',
+				'allow_null'	=> false
+			),
+			'field'			=> array(
+				'datatype'		=> 'VARCHAR(13)',
+				'allow_null'	=> false
+			),
+			'expires'		=> array(
+				'datatype'		=> 'INT(10)',
+				'allow_null'	=> false,
+				'default'		=> '0'
+			)
+		),
+		'PRIMARY KEY'	=> array('id')
+	);
+
+	$db->create_table('registration_fields', $schema) or error('Unable to create registration fields table', __FILE__, __LINE__, $db->error());
+
+	$schema = array(
+		'FIELDS'		=> array(
 			'pid'			=> array(
 				'datatype'		=> 'INT(10)',
 				'allow_null'	=> false,

@@ -71,8 +71,21 @@ if (isset($_POST['form_sent']))
 	if ($db->num_rows($result))
 		message($lang_register['Registration flood']);
 
+	if (!isset($_COOKIE['regid']))
+		message($lang_common['Bad request'], false, '404 Not Found');
 
-	$username = pun_trim($_POST['req_user']);
+	$result = $db->query('SELECT field, expiration FROM '.$db->prefix.'registration_fields WHERE id = \''.$db->escape($_COOKIE['regid']).'\'') or error('Unable to fetch registration ID', __FILE__, __LINE__, $db->error());
+	if (!$db->num_rows($result))
+		message($lang_common['Bad request'], false, '404 Not Found');
+
+	$regid = $db->fetch_assoc($result);
+
+	if ($regid['expiration'] <= time())
+		mesage($lang_common['Bad request'], false, '404 Not Found');
+
+	$userfield = $regid['field'];
+
+	$username = pun_trim($_POST[$userfield]);
 	$email1 = strtolower(pun_trim($_POST['req_email1']));
 
 	if ($pun_config['o_regs_verify'] == '1')
@@ -258,10 +271,30 @@ if (isset($_POST['form_sent']))
 	}
 }
 
+if (!isset($_COOKIE['regid']))
+{
+	$now = time();
+	$regid = uniqid();
+	$regfield = uniqid();
+	$db->query('INSERT INTO '.$db->prefix.'registration_fields (id, field, expires) VALUES (\''.$db->escape($regid).'\', \''.$db->escape($regfield).'\', '.intval($now + $pun_config['o_timeout_visit']).')') or error('Unable to insert registration ID', __FILE__, __LINE__, $db->error());
+	forum_setcookie('regid', $regid, $now + $pun_config['o_timeout_visit']);
+}
+else
+{
+	$result = $db->query('SELECT field, expires FROM '.$db->prefix.'registration_fields WHERE id = \''.$db->escape($_COOKIE['regid']).'\'') or error('Unable to fetch registration ID', __FILE__, __LINE__, $db->error());
+	if (!$db->num_rows($result))
+		message($lang_common['Bad request'], false, '404 Not Found');
 
+	$regid = $db->fetch_assoc($result);
+
+	if ($regid['expires'] <= time())
+		message($lang_common['Bad request'], false, '404 Not Found');
+
+	$regfield = $regid['field'];
+}
 $page_title = array(pun_htmlspecialchars($pun_config['o_board_title']), $lang_register['Register']);
-$required_fields = array('req_user' => $lang_common['Username'], 'req_password1' => $lang_common['Password'], 'req_password2' => $lang_prof_reg['Confirm pass'], 'req_email1' => $lang_common['Email'], 'req_email2' => $lang_common['Email'].' 2');
-$focus_element = array('register', 'req_user');
+$required_fields = array($regfield => $lang_common['Username'], 'req_password1' => $lang_common['Password'], 'req_password2' => $lang_prof_reg['Confirm pass'], 'req_email1' => $lang_common['Email'], 'req_email2' => $lang_common['Email'].' 2');
+$focus_element = array('register', $regfield);
 define('PUN_ACTIVE_PAGE', 'register');
 require PUN_ROOT.'header.php';
 
@@ -308,7 +341,7 @@ if (!empty($errors))
 					<legend><?php echo $lang_register['Username legend'] ?></legend>
 					<div class="infldset">
 						<input type="hidden" name="form_sent" value="1" />
-						<label class="required"><strong><?php echo $lang_common['Username'] ?> <span><?php echo $lang_common['Required'] ?></span></strong><br /><input type="text" name="req_user" value="<?php if (isset($_POST['req_user'])) echo pun_htmlspecialchars($_POST['req_user']); ?>" size="25" maxlength="25" /><br /></label>
+						<label class="required"><strong><?php echo $lang_common['Username'] ?> <span><?php echo $lang_common['Required'] ?></span></strong><br /><input type="text" name="<?php echo pun_htmlspecialchars($regfield); ?>" value="<?php if (isset($_POST[$regfield])) echo pun_htmlspecialchars($_POST[$regfield]); ?>" size="25" maxlength="25" /><br /></label>
 					</div>
 				</fieldset>
 			</div>
