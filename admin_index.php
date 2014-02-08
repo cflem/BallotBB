@@ -28,14 +28,18 @@ if ($action == 'check_upgrade')
 	if (!ini_get('allow_url_fopen'))
 		message($lang_admin_index['fopen disabled message']);
 
-	$latest_version = trim(@file_get_contents('http://fluxbb.org/latest_version'));
+	if (!function_exists('json_decode'))
+		message($lang_admin_index['json decode not found message']);
+
+	$api_response = json_decode(trim(@file_get_contents('https://api.github.com/repos/GeonoTRON2000/BallotBB/releases')), true);
+	$latest_version = @$api_response[0]["tag_name"];
 	if (empty($latest_version))
 		message($lang_admin_index['Upgrade check failed message']);
 
 	if (version_compare($pun_config['o_cur_version'], $latest_version, '>='))
 		message($lang_admin_index['Running latest version message']);
 	else
-		message(sprintf($lang_admin_index['New version available message'], '<a href="http://fluxbb.org/">FluxBB.org</a>'));
+		message(sprintf($lang_admin_index['New version available message'], '<a href="https://github.com/GeonoTRON2000/BallotBB/releases/">GitHub.com</a>'));
 }
 
 $page_title = array(pun_htmlspecialchars($pun_config['o_board_title']), $lang_admin_common['Admin'], $lang_admin_common['Index']);
