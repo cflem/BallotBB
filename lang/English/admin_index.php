@@ -27,9 +27,6 @@ $lang_admin_index = array(
 'BallotBB version data'				=>	'v%s - %s',
 'Server statistics label'			=>	'Server statistics',
 'View server statistics'			=>	'View server statistics',
-'Support label'						=>	'Support',
-'Forum label'						=>	'Forum',
-'IRC label'							=>	'IRC channel',
 
 // Language definitions used in admin_statistics.php
 'PHPinfo disabled message'			=>	'The PHP function phpinfo() has been disabled on this server.',

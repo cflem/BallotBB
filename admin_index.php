@@ -72,17 +72,13 @@ generate_admin_menu('index');
 		<div id="adstats" class="box">
 			<div class="inbox">
 				<dl>
-					<dt><?php echo $lang_admin_index['FluxBB version label'] ?></dt>
+					<dt><?php echo $lang_admin_index['BallotBB version label'] ?></dt>
 					<dd>
-						<?php printf($lang_admin_index['FluxBB version data']."\n", $pun_config['o_cur_version'], '<a href="admin_index.php?action=check_upgrade">'.$lang_admin_index['Check for upgrade'].'</a>') ?>
+						<?php printf($lang_admin_index['BallotBB version data']."\n", $pun_config['o_cur_version'], '<a href="admin_index.php?action=check_upgrade">'.$lang_admin_index['Check for upgrade'].'</a>') ?>
 					</dd>
 					<dt><?php echo $lang_admin_index['Server statistics label'] ?></dt>
 					<dd>
 						<a href="admin_statistics.php"><?php echo $lang_admin_index['View server statistics'] ?></a>
-					</dd>
-					<dt><?php echo $lang_admin_index['Support label'] ?></dt>
-					<dd>
-						<a href="http://fluxbb.org/forums/index.php"><?php echo $lang_admin_index['Forum label'] ?></a> - <a href="http://fluxbb.org/community/irc.html"><?php echo $lang_admin_index['IRC label'] ?></a>
 					</dd>
 				</dl>
 			</div>
