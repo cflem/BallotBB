@@ -28,6 +28,7 @@ if (isset($_POST['form_sent']))
 		'board_title'			=> pun_trim($_POST['form']['board_title']),
 		'board_desc'			=> pun_trim($_POST['form']['board_desc']),
 		'base_url'				=> pun_trim($_POST['form']['base_url']),
+		'close_time'			=> intval($_POST['form']['close_time']);
 		'default_timezone'		=> floatval($_POST['form']['default_timezone']),
 		'default_dst'			=> $_POST['form']['default_dst'] != '1' ? '0' : '1',
 		'default_lang'			=> pun_trim($_POST['form']['default_lang']),
@@ -101,6 +102,9 @@ if (isset($_POST['form_sent']))
 		else
 			$form['base_url'] = idn_to_ascii($form['base_url']);
 	}
+
+	if ($form['close_time'] <= 0)
+		message($lang_admin_options['Invalid close time']);
 
 	$languages = forum_list_langs();
 	if (!in_array($form['default_lang'], $languages))
@@ -373,6 +377,13 @@ generate_admin_menu('options');
 						<legend><?php echo $lang_admin_options['Timeouts subhead'] ?></legend>
 						<div class="infldset">
 							<table class="aligntop">
+								<tr>
+									<th scope="row"><?php echo $lang_admin_options['Close time label'] ?></th>
+									<td>
+										<input type="text" name="form[close_time]" size="25" maxlength="25" value="<?php echo pun_htmlspecialchars($pun_config['o_close_time']) ?>" />
+										<span><?php echo $lang_admin_options['Close time help'] ?></span>
+									</td>
+								</tr>
 								<tr>
 									<th scope="row"><?php echo $lang_admin_options['Time format label'] ?></th>
 									<td>
