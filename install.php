@@ -1609,6 +1609,7 @@ else
 		'o_parser_revision'			=> FORUM_PARSER_REVISION,
 		'o_board_title'				=> $title,
 		'o_board_desc'				=> $description,
+		'o_close_time'			=> 5184000,
 		'o_default_timezone'		=> 0,
 		'o_time_format'				=> 'H:i:s',
 		'o_date_format'				=> 'Y-m-d',

@@ -88,6 +88,8 @@ function install()
 	$db->create_table('votes', $schema) or error('Unable to create votes table', __FILE__, __LINE__, $db->error());
 
 	$db->query('CREATE VIEW '.$db->prefix.'reputation AS SELECT p.poster_id AS uid, (SUM(2*v.positive-1)-(5*count(r.pid))) AS reputation FROM '.$db->prefix.'posts AS p LEFT JOIN '.$db->prefix.'removals AS r ON (r.uid = p.poster_id AND r.pid = p.id) LEFT JOIN '.$db->prefix.'votes AS v ON (v.uid = p.poster_id AND v.pid = p.id)') or error('Could not create reputation view', __FILE__, __LINE__, $db->error());
+
+	$db->query('INSERT INTO '.$db->prefix.'config (conf_name, conf_value) VALUES(\'o_close_time\', 5184000)') or error('Could not insert o_close_time into the config table', __FILE__, __LINE__, $db->error());
 }
 
 // This following function will be called when the user presses the "Restore" button (only if $mod_restore is true (see above))
