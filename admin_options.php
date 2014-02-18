@@ -28,7 +28,7 @@ if (isset($_POST['form_sent']))
 		'board_title'			=> pun_trim($_POST['form']['board_title']),
 		'board_desc'			=> pun_trim($_POST['form']['board_desc']),
 		'base_url'				=> pun_trim($_POST['form']['base_url']),
-		'close_time'			=> intval($_POST['form']['close_time']);
+		'close_time'			=> intval($_POST['form']['close_time']),
 		'default_timezone'		=> floatval($_POST['form']['default_timezone']),
 		'default_dst'			=> $_POST['form']['default_dst'] != '1' ? '0' : '1',
 		'default_lang'			=> pun_trim($_POST['form']['default_lang']),
