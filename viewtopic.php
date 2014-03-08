@@ -80,9 +80,9 @@ else if ($action == 'last')
 
 // Fetch some info about the topic
 if (!$pun_user['is_guest'])
-	$result = $db->query('SELECT t.subject, (t.closed | (t.last_post < '.(time()-$pun_config['o_close_time']).')) AS closed, t.num_replies, t.sticky, t.first_post_id, f.id AS forum_id, f.forum_name, f.moderators, fp.post_replies, s.user_id AS is_subscribed FROM '.$db->prefix.'topics AS t INNER JOIN '.$db->prefix.'forums AS f ON f.id=t.forum_id LEFT JOIN '.$db->prefix.'topic_subscriptions AS s ON (t.id=s.topic_id AND s.user_id='.$pun_user['id'].') LEFT JOIN '.$db->prefix.'forum_perms AS fp ON (fp.forum_id=f.id AND fp.group_id='.$pun_user['g_id'].') WHERE (fp.read_forum IS NULL OR fp.read_forum=1) AND t.id='.$id.' AND t.moved_to IS NULL') or error('Unable to fetch topic info', __FILE__, __LINE__, $db->error());
+	$result = $db->query('SELECT t.subject, t.poster, (t.closed | (t.last_post < '.(time()-$pun_config['o_close_time']).')) AS closed, t.num_replies, t.sticky, t.first_post_id, f.id AS forum_id, f.forum_name, f.moderators, fp.post_replies, s.user_id AS is_subscribed FROM '.$db->prefix.'topics AS t INNER JOIN '.$db->prefix.'forums AS f ON f.id=t.forum_id LEFT JOIN '.$db->prefix.'topic_subscriptions AS s ON (t.id=s.topic_id AND s.user_id='.$pun_user['id'].') LEFT JOIN '.$db->prefix.'forum_perms AS fp ON (fp.forum_id=f.id AND fp.group_id='.$pun_user['g_id'].') WHERE (fp.read_forum IS NULL OR fp.read_forum=1) AND t.id='.$id.' AND t.moved_to IS NULL') or error('Unable to fetch topic info', __FILE__, __LINE__, $db->error());
 else
-	$result = $db->query('SELECT t.subject, (t.closed | (t.last_post < '.(time()-$pun_config['o_close_time']).')) AS closed, t.num_replies, t.sticky, t.first_post_id, f.id AS forum_id, f.forum_name, f.moderators, fp.post_replies, 0 AS is_subscribed FROM '.$db->prefix.'topics AS t INNER JOIN '.$db->prefix.'forums AS f ON f.id=t.forum_id LEFT JOIN '.$db->prefix.'forum_perms AS fp ON (fp.forum_id=f.id AND fp.group_id='.$pun_user['g_id'].') WHERE (fp.read_forum IS NULL OR fp.read_forum=1) AND t.id='.$id.' AND t.moved_to IS NULL') or error('Unable to fetch topic info', __FILE__, __LINE__, $db->error());
+	$result = $db->query('SELECT t.subject, t.poster, (t.closed | (t.last_post < '.(time()-$pun_config['o_close_time']).')) AS closed, t.num_replies, t.sticky, t.first_post_id, f.id AS forum_id, f.forum_name, f.moderators, fp.post_replies, 0 AS is_subscribed FROM '.$db->prefix.'topics AS t INNER JOIN '.$db->prefix.'forums AS f ON f.id=t.forum_id LEFT JOIN '.$db->prefix.'forum_perms AS fp ON (fp.forum_id=f.id AND fp.group_id='.$pun_user['g_id'].') WHERE (fp.read_forum IS NULL OR fp.read_forum=1) AND t.id='.$id.' AND t.moved_to IS NULL') or error('Unable to fetch topic info', __FILE__, __LINE__, $db->error());
 
 if (!$db->num_rows($result))
 	message($lang_common['Bad request'], false, '404 Not Found');
@@ -98,19 +98,25 @@ if ($is_admmod)
 // Can we or can we not post replies?
 if ($cur_topic['closed'] == '0')
 {
+	$post_links = array();
 	if (($cur_topic['post_replies'] == '' && $pun_user['g_post_replies'] == '1') || $cur_topic['post_replies'] == '1' || $is_admmod)
-		$post_link = "\t\t\t".'<p class="postlink conr"><a href="post.php?tid='.$id.'">'.$lang_topic['Post reply'].'</a></p>'."\n";
+		$post_links[] = '<a href="post.php?tid='.$id.'">'.$lang_topic['Post reply'].'</a>';
+	if ($cur_topic['poster'] == $pun_user['username'])
+		$post_links[] = '<a href="misc.php?action=reqclose&tid='.$id.'">'.$lang_topic['Request close'].'</a>'
+	if (count($post_links) > 0)
+		$post_link = "\t\t\t".'<p class="postlink conr">'.implode(' / ', $post_links).'</p>'."\n";
 	else
 		$post_link = '';
 }
 else
 {
-	$post_link = $lang_topic['Topic closed'];
+	$post_links = array();
+	$post_links[] = $lang_topic['Topic closed'];
 
 	if ($is_admmod)
-		$post_link .= ' / <a href="post.php?tid='.$id.'">'.$lang_topic['Post reply'].'</a>';
+		$post_links[] = '<a href="post.php?tid='.$id.'">'.$lang_topic['Post reply'].'</a>';
 
-	$post_link = "\t\t\t".'<p class="postlink conr">'.$post_link.'</p>'."\n";
+	$post_link = "\t\t\t".'<p class="postlink conr">'.implode(' / ', $post_links).'</p>'."\n";
 }
 
 

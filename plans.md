@@ -1,6 +1,6 @@
 # BallotBB Long-Term Goals
 
-## User Reputation System
+## User Reputation System (Complete)
 
 * constructive posts
 * measured by votes, up and down
@@ -24,7 +24,7 @@
   * based on previous experience
   * looks at words
 
-## Discipline Users
+## Discipline Users (Complete)
 * warning and ban
 * fixed number of users
 * if reputation goes into negatives
@@ -37,10 +37,9 @@
   * etc.
 
 ## Close derelict threads
-* Time-based closing
+* Time-based closing (Complete)
 * Requested by topic owner
 * Voted on by users
 
-## Spambot detection
-* Honeypot?
-* ReCAPTCHA?
+## Spambot detection (Complete)
+* Randomized cookie corresponding to randomized field name

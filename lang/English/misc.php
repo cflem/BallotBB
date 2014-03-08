@@ -3,6 +3,8 @@
 // Language definitions used in various scripts
 $lang_misc = array(
 
+'Close redirect'			=>	'Topic closed. Redirecting …',
+
 'Mark read redirect'			=>	'All topics and forums have been marked as read. Redirecting …',
 'Mark forum read redirect'		=>	'All topics in the specified forum have been marked as read. Redirecting …',
 

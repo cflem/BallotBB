@@ -446,11 +446,11 @@ else if ($action == 'unsubscribe')
 
 else if ($action == 'vote')
 {
-	if ((strtolower($_GET["vote"]) != "up" && strtolower($_GET["vote"]) != "down") || intval($_GET["pid"]) <= 0)
+	if ((strtolower($_GET['vote']) != 'up' && strtolower($_GET['vote']) != 'down') || intval($_GET['pid']) <= 0)
 		message($lang_common['Bad request'], false, '404 Not Found');
 
-	$pid = intval($_GET["pid"]);
-	$vote = intval(strtolower($_GET["vote"]) == "up");
+	$pid = intval($_GET['pid']);
+	$vote = intval(strtolower($_GET['vote']) == 'up');
 
 	$result = $db->query('SELECT poster_id FROM '.$db->prefix.'posts WHERE id='.$pid) or error('Unable to fetch post info', __FILE__, __LINE__, $db->error());
 	if (!$db->num_rows($result))
@@ -466,6 +466,28 @@ else if ($action == 'vote')
 		$db->query('UPDATE '.$db->prefix.'votes SET positive='.$vote.' WHERE uid='.$pun_user['id'].' AND pid='.$pid) or error('Unable to update vote data', __FILE__, __LINE__, $db->error());
 
 	redirect('viewtopic.php?pid='.$pid.'#p'.$pid, $lang_misc['Vote redirect']);
+}
+
+
+else if ($action == 'reqclose')
+{
+	$tid = intval($_GET['tid']);
+
+	$result = $db->query('SELECT poster, closed FROM '.$db->prefix.'topics WHERE id = '.$tid) or error('Unable to fetch topic info', __FILE__, __LINE__, $db->error());
+	if (!$db->num_rows($result))
+		message($lang_common['Bad request'], false, '404 Not Found');
+
+	$cur_topic = $db->fetch_assoc($result);
+
+	if ($cur_topic['poster'] == $pun_user['username'])
+	{
+		$db->query('UPDATE '.$db->prefix.'topics SET closed = 1 WHERE id = '.$tid) or error('Unable to update topic info', __FILE__, __LINE__, $db->error());
+		redirect('viewtopic.php?id='.$tid, $lang_misc['Close redirect']);
+	}
+	else
+	{
+		message($lang_common['No permission'], false, '403 Forbidden');
+	}
 }
 
 

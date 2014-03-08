@@ -4,6 +4,7 @@
 $lang_topic = array(
 
 'Post reply'		=>	'Post reply',
+'Request close'			=>	'Request close',
 'Topic closed'		=>	'Topic closed',
 'Reputation'			=>	'Reputation:',
 'From'				=>	'From:', // User location
